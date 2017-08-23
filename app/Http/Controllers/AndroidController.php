@@ -13,8 +13,9 @@ class AndroidController extends Controller
     //
     public function addUser(Request $request) {
     $user = array();
+    $userjson = '{"email":"wangoken2@gmail.com","name":"ken wango","phone":"0725145304","password":"123456"}';
     $userDetails = json_decode($request->user);
-    $locationDetails = json_decode($request->location);
+    //$userDetails = json_decode($userjson);
 
     while (User::where('email', $userDetails->email)->orWhere('phone', $userDetails->phone)->exists()) {
       $user['status'] = "exist";
@@ -23,7 +24,7 @@ class AndroidController extends Controller
     }
 
     User::create([
-      "name" => $userDetails->fname,
+      "name" => $userDetails->name,
       "phone" => $userDetails->phone,
       "email" => $userDetails->email,
       "password" => $userDetails->password
@@ -47,7 +48,7 @@ class AndroidController extends Controller
       ]);
     }
 
-    $token = crypt(sha1($gen));
+    $token = Bcrypt(sha1($gen));
     Token::create([
       "id" => $token,
       "user_id" => $user,
@@ -57,4 +58,4 @@ class AndroidController extends Controller
   }
 
 }
-}
+
