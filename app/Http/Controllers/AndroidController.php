@@ -8,6 +8,8 @@ use App\User;
 
 use App\Token;
 
+use App\Loan;
+
 class AndroidController extends Controller
 {
     //
@@ -27,7 +29,7 @@ class AndroidController extends Controller
       "name" => $userDetails->name,
       "phone" => $userDetails->phone,
       "email" => $userDetails->email,
-      "password" => $userDetails->password
+      "password" => md5($userDetails->password)
     ]);
 
     $user['status'] = 'created';
@@ -36,6 +38,57 @@ class AndroidController extends Controller
     $user['token'] = $this->generateToken($u->id);
 
     echo json_encode($user);
+
+  }
+
+  public function authenticateUser(Request $request) {
+    $user = array();
+    $username = $request->username;
+    $password = $request->password;
+
+    $username = "0725145304";
+    $password = "Kenkode1!";
+
+    $details = array(
+      'username' => $username,
+      'password' => $password
+    );
+
+    //$auth = User::where($details);
+
+    $auth = User::where('password', '=', md5($password))
+            ->where(function ($query) use ($username){
+                $query->where('email', '=', $username)
+                      ->orWhere('phone', '=', $username);
+            });
+
+    echo md5($password);
+
+
+    $check = User::where('email', '=', $username)->orWhere('phone', '=', $username)->count();
+
+    if($auth->exists()) {
+      //$africas = new AfricasTalkingController();
+      $u = $auth->first();
+      $user['status'] = 'exist';
+      $user['user'] = $u;
+      $user['token'] = $this->generateToken($u->id);
+      //$user['pin'] = $africas->sendMessage(1, array("+" . $phone));
+    }else {
+      $user['status'] = 'unavailable';
+    }
+    
+    echo json_encode($user);
+  }
+
+  public function validateUser(Request $request) {
+    $user = $request->user;
+
+    if(User::where('id', $user)->exists()) {
+      echo "E";
+    }else {
+      "DNE";
+    }
 
   }
 
@@ -55,6 +108,59 @@ class AndroidController extends Controller
       "status" => 0
     ]);
     return $token;
+  }
+
+  public function applyLoan(Request $request) {
+    $userid = $request->user_id;
+    $amount = $request->amount;
+
+    /*$userid = 1;
+    $amount = 500;*/
+
+    $loan = new Loan;
+    $loan->user_id = $userid;
+    $loan->amount = $amount;
+    $loan->status = 1;
+    $loan->save();
+
+    echo "Loan successfully approved";
+
+  }
+
+  public function getLoans(Request $request) {
+    $userid = $request->user_id;
+
+    /*$userid = 1;
+    $amount = 500;*/
+
+    $loans = Loan::where('user_id',$userid)->get();
+
+    echo json_encode($loans);
+
+  }
+
+  public function loanHistory(Request $request) {
+    $userid = $request->user_id;
+
+    /*$userid = 1;
+    $amount = 500;*/
+
+    $loan = Loan::where('user_id',$userid)->count();
+
+    echo json_encode($loan);
+
+  }
+
+  public function loanStatus(Request $request) {
+    $userid = $request->user_id;
+
+    /*$userid = 1;
+    $amount = 500;*/
+
+    $loans = Loan::where('user_id',$userid)->get();
+
+    echo json_encode($loans);
+
   }
 
 }

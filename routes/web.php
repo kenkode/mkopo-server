@@ -19,7 +19,16 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 Route::get('/add_user', 'AndroidController@addUser');
 
 Route::get("/authenticate_user", "AndroidController@authenticateUser");
+
+Route::get('/apply_loan', 'AndroidController@applyLoan');
+
+Route::get('/get_loan', 'AndroidController@getLoans');
+
+Route::get('/loan_status', 'AndroidController@loanStatus');
+
+Route::get('/loan_history', 'AndroidController@loanHistory');
+
+Route::get('/sms_transactions', 'AndroidController@smsTransactions');
