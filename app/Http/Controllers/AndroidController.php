@@ -142,7 +142,7 @@ class AndroidController extends Controller
     /*$userid = 1;
     $amount = 500;*/
 
-    $loans = Loan::where('user_id',$userid)->get();
+    $loans = Loan::where('user_id',$userid)->orderBy('id','DESC')->get();
 
     echo json_encode($loans);
 
