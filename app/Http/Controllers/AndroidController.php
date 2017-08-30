@@ -46,8 +46,8 @@ class AndroidController extends Controller
     $username = $request->username;
     $password = $request->password;
 
-    $username = "0725145304";
-    $password = "Kenkode1!";
+    /*$username = "0725145304";
+    $password = "Kenkode1!";*/
 
     $details = array(
       'username' => $username,
@@ -62,7 +62,7 @@ class AndroidController extends Controller
                       ->orWhere('phone', '=', $username);
             });
 
-    echo md5($password);
+    //echo md5($password);
 
 
     $check = User::where('email', '=', $username)->orWhere('phone', '=', $username)->count();
@@ -114,6 +114,8 @@ class AndroidController extends Controller
     $userid = $request->user_id;
     $amount = $request->amount;
 
+    $response = array();
+
     /*$userid = 1;
     $amount = 500;*/
 
@@ -121,9 +123,16 @@ class AndroidController extends Controller
     $loan->user_id = $userid;
     $loan->amount = $amount;
     $loan->status = 1;
-    $loan->save();
 
-    echo "Loan successfully approved";
+    if($loan->save()){
+      $response["success"] = true;
+      $response["error"]="";
+    }else{
+      $response["success"] = false;
+      $response["error"]= "";
+    }
+
+    echo json_encode($response);  
 
   }
 
@@ -136,6 +145,18 @@ class AndroidController extends Controller
     $loans = Loan::where('user_id',$userid)->get();
 
     echo json_encode($loans);
+
+  }
+
+  public function loanDetails(Request $request) {
+    $id = $request->id;
+
+    /*$userid = 1;
+    $amount = 500;*/
+
+    $loan = Loan::where('id',$id)->first();
+
+    echo json_encode($loan);
 
   }
 

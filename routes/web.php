@@ -23,9 +23,11 @@ Route::get('/add_user', 'AndroidController@addUser');
 
 Route::get("/authenticate_user", "AndroidController@authenticateUser");
 
-Route::get('/apply_loan', 'AndroidController@applyLoan');
+Route::post('/apply_loan', 'AndroidController@applyLoan');
 
-Route::get('/get_loan', 'AndroidController@getLoans');
+Route::get('/get_loans', 'AndroidController@getLoans');
+
+Route::get('/loan_details', 'AndroidController@loanDetails');
 
 Route::get('/loan_status', 'AndroidController@loanStatus');
 
